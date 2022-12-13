@@ -1,0 +1,77 @@
+{% extends "travel/layout.html" %}
+{% load static %}
+{% block body %}
+
+<div class="content">
+    {% if user == profile %}
+    <div class="sortby"><button id="editProfileBtn" class="planButton">Edit Profile</button></div>
+    {% endif %}
+    <div id="profile">
+    <div id="content-grid">
+        <div class="left-grid"><img class="prof-pic" src="{{ profile.profpic.url }}"></div>
+        <div class="profile">
+            <h2>{{profile.first_name}}</h2>
+            <p><h3>📍{{profile.home}}</h3></p>
+        </div>
+    </div>
+    </div>
+    <div id="editprofile">
+    <div id="content-grid">
+        <div class="left-grid"><img class="prof-pic" src="{{ profile.profpic.url }}"></div>
+        <div class="profile"><form action="/edit_profile" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p>Change Profile Photo: <input name="image" type="file" accept="image/*"></p>
+            <p>First Name: <input name="name" class="planInput" type="text" value="{{profile.first_name}}"></p>
+            <p>Home: <input name="home" class="planInput" type="text" value="{{profile.home}}"></p>
+            <p><button class="planButton" type="submit">Update</button></p>
+        </form>
+        </div>
+    </div>
+</div>
+    <hr>
+    <h1><center>My Planned Trips</h1></center>
+    {% for trip in page_obj %}
+        <div id="content-grid"> 
+            <div class="left-grid">
+                <a class="title-link" href="{% url 'trip_view' trip.id %}"><h2>{{trip.title}}</h2></a>
+                <img class="photo-small" src="{{ trip.img.url }}">
+            </div>
+            <div id="trip-plans">
+                <p>📍<strong>{{trip.location}}</strong></p>
+                <p>{{trip.budget}}</p>
+                <h4>Shared by <a class="title-link" href="{% url 'profile' trip.user.id %}">{{ trip.user.username }}</a> on {{ trip.timestamp }}</h4>
+                <p>{{ trip.plans|safe }}</p>
+            </div>
+        </div>
+        <div id="content-grid">
+            <div class="left-grid"></div>
+            <div><h3>...</h3><p><a href="{% url 'trip_view' trip.id %}">View Full Trip</a></p></div>
+        </div>
+        <hr>    
+        {% endfor %}
+        <div class="paginator">
+            <ul class="pagination justify-content-center"> 
+            {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+            {% endif %}
+        
+            {% for pg in page_obj.paginator.page_range %}
+                {% if page_obj.number == pg %}
+                <li class="page-item active"><a href="?page={{pg}}" class="page-link">{{pg}}</a></li>
+                {% else %}
+                <li class="page-item"><a href="?page={{pg}}" class="page-link">{{pg}}</a></li>
+                {% endif %}
+            {% endfor %}
+        
+            {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+            {% endif %}
+        
+            </ul>
+          </div
+</div>
+
+<script src="{% static 'travel/profile.js' %}"></script>
+
+
+{% endblock %}

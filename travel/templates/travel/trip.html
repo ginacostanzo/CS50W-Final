@@ -1,0 +1,88 @@
+{% extends "travel/layout.html" %}
+{% load static %}
+{% block body %}
+
+<div class="content">
+    <div id="content-grid">
+        <div class="left-grid"><img id="tripPhoto" class="photo-small" src="{{ trip.img.url }}">
+    </div>
+
+        <div>
+    <h2>{{trip.title}} {% if trip.status == "been" %}
+        ☑️
+        {% endif %}</h2>
+    <h5>📍{{trip.location}}</h5>
+    <h5>{{trip.budget}}</h5>
+    <button id="toggleLists" type="button" class="planButton">+ Add to List</button>
+    <h4>Shared by <a class="title-link" href="{% url 'profile' trip.user.id %}">{{trip.user.username}}</a> on {{ trip.timestamp }}</h4>
+    <hr>
+    {% for tag in tags %}
+    {% if forloop.counter != 1 %}
+    &nbsp;&nbsp;
+    {% endif %}
+    <a href="{% url 'tags' tag %}">&#35;{{tag}}</a>
+    {% endfor %}
+    <hr>
+    {% if photos %}
+        <h5><button id="togglePhotos" class="planButton" type="button">View More Photos</button></h5>
+        {% endif %}
+
+</div>
+</div>
+    <hr>
+    <h2>Trip Plans
+    {% if trip.status == "been" %}
+        <button class="tripStatus" disabled>☑️ Completed Trip</button>
+        {% else %}
+        <button class="tripStatus" disabled>Future Plan</button>
+        {% endif %}
+    </h2>
+    {{trip.plans|safe}}
+    <hr>
+
+</div>
+
+<center><div id="selectListPopUp">
+    <form action="/addToList" method="post">
+        {% csrf_token %}
+        <h3>Add to List:</h3>
+            {% for list in lists %}
+            <p>
+                <input class="radioBtn" type="checkbox" id="{{list}}" name="list[]" value="{{list}}">
+                <label class="listsBtns" for="{{list}}">{{list}}</label>
+            </p>
+                {% endfor %}
+                <hr>
+                <button id="newListBtn" class="listsBtns" type="button">+ Create New List</button>
+                
+            <span id="newListForm">
+                <input class="planInput" name="list[]" type="text" placeholder="Name Your List">
+            </span>
+            <p><input type="hidden" name="trip" value="{{trip.id}}"></p>
+        <button id="saveListsBtn" class="planButton" type="submit">Save</button> <button id="cancelListsBtn" class="planButton" type="submit">Cancel</button>
+</div>
+
+<!-- Slideshow container -->
+<div id="slideshowContainer">
+    <div id="closePhotos"><button class="planButton" id="closePhotosBtn">X</button></div>
+    <!-- Images -->
+    {% for photo in photos %}
+    
+        
+        <div id="photo{{forloop.counter}}"class="hiddenSlide">
+            <center><img class="fullPhoto" src="{{ photo.photos.url }}"><p>
+                {{photo.caption}}
+            </p></center>
+        </div>
+          <!-- Next and previous buttons -->
+        <div id="buttons{{forloop.counter}}" class="hiddenSlide">
+            <a id="prevBtn" class="prev" data-photoid="{{ forloop.counter }}">&#10094;</a>
+            <a id="nextBtn" class="next" data-photoid="{{ forloop.counter }}">&#10095;</a>
+        </div>
+    {% endfor %}
+</div>
+</center>
+</div>
+</div>
+<script src="{% static 'travel/trip.js' %}"></script>
+{% endblock %}

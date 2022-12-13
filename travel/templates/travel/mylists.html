@@ -1,0 +1,31 @@
+{% extends "travel/layout.html" %}
+{% load static %}
+{% block body %}
+
+<div class="content">
+    
+    <div id="profile">
+    <div id="content-grid">
+        <div class="left-grid">
+            <h2>{{profile.first_name}} <p>📍{{profile.home}}</p></h2>
+            <img class="prof-pic" src="{{ profile.profpic.url }}"></div>
+        <div class="profile">
+            <h2>My Lists</h2>
+            {% for list in lists %}
+            <p><a href="{% url 'lists_view' list.lists %}"><button type="button" class="listsBtns">{{list.lists}}</button></a></p>
+            {% endfor %}
+            <button id="newListBtn" class="planButton" type="button">+ Create New List</button>
+            <span id="newListForm">
+                <form action="/edit_profile" method="post">
+                    {% csrf_token %}
+                    <input class="planInput" name="list_name" type="text" placeholder="Name Your List">
+                    <button class="planButton" type="submit">Save List</button>
+                </form>
+            </span>
+        </div>
+    </div>
+    </div>
+</div>
+<script src="{% static 'travel/lists.js' %}"></script>
+
+{% endblock %}

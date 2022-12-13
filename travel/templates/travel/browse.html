@@ -1,0 +1,88 @@
+{% extends "travel/layout.html" %}
+{% load static %}
+{% block body %}
+
+<div class="content">
+    <div id="content-grid">
+        <div>
+        <form action="/search" method="post">
+            {% csrf_token %}
+            <input class="planInput" type="text" placeholder="Search Trips..." name="search">
+            <button class="planButton" type="submit">Search</button>
+        </form>
+        </div>
+    <div class="sortby">
+        <form action="/browse" method="post" class="inline">
+        {% csrf_token %}
+        <select name="sort" id="sort_dropdown" onchange="this.form.submit()">
+            <option selected="true" disabled="disabled">Sort By...</option>
+            <option value="-id">Date Added (Newest First)</option>
+            <option value="id">Date Added (Oldest First)</option>
+            <option value="title">Trip Title (Ascending)</option>
+            <option value="-title">Trip Title (Descending)</option>
+            <option value="location">Location</option>
+            <option value="budget">Budget (Lowest First)</option>
+            <option value="-budget">Budget (Highest First)</option>
+        </select>
+    </form>
+    </div>
+    </div>
+    <div class="posts">
+        {% if message %}
+        <h2>{{message|safe}}</h2>
+        <hr>
+        {% endif %}
+        {% if trips %}
+        {% for trip in page_obj %}
+        <div id="content-grid"> 
+            <div class="left-grid">
+                <a class="title-link" href="{% url 'trip_view' trip.id %}"><h2>{{trip.title}}</h2></a>
+                <img class="photo-small" src="{{ trip.img.url }}">
+            </div>
+            <div id="trip-plans">
+                {% if button %}
+                <a href='{% url 'removeFromList' list_name=list trip_id=trip.id %}'><button id="removeBtn" class='planButton' type=button>Remove Trip From List</button></a>
+        {% endif %}
+                <p>📍<strong>{{trip.location}}</strong></p>
+                <p>{{trip.budget}}</p>
+                <h4>Shared by <a class="title-link" href="{% url 'profile' trip.user.id %}">{{ trip.user.username }}</a> on {{ trip.timestamp }}</h4>
+                {% if user == trip.user %}
+                <strong><a class="title-link" href="{% url 'edit_trip' trip.id %}">Edit Trip</a></strong>
+                {% endif %}
+                <p>{{ trip.plans|safe }}</p>
+            </div>
+        </div>
+        <div id="content-grid">
+            <div class="left-grid"></div>
+            <div><h3>...</h3><p><a href="{% url 'trip_view' trip.id %}">View Full Trip</a></p></div>
+        </div>
+        <hr>    
+        {% endfor %}
+        {% endif %}
+    </div>
+    <div class="paginator">
+        <ul class="pagination justify-content-center"> 
+        {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+        {% endif %}
+    
+        {% for pg in page_obj.paginator.page_range %}
+            {% if page_obj.number == pg %}
+            <li class="page-item active"><a href="?page={{pg}}" class="page-link">{{pg}}</a></li>
+            {% else %}
+            <li class="page-item"><a href="?page={{pg}}" class="page-link">{{pg}}</a></li>
+            {% endif %}
+        {% endfor %}
+    
+        {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+        {% endif %}
+    
+        </ul>
+      </div
+</div>
+
+
+<script src="{% static 'travel/browse.js' %}"></script>
+
+{% endblock %}

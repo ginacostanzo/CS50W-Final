@@ -1,0 +1,106 @@
+{% extends "travel/layout.html" %}
+{% load static %}
+{% block body %}
+
+<script>
+    tinymce.init({
+        selector: '#planTextarea',
+        plugins: 'anchor autolink charmap emoticons link lists searchreplace visualblocks wordcount',
+          toolbar: 'undo redo | bold italic underline strikethrough | link image | spellcheckdialog a11ycheck | numlist bullist indent outdent | emoticons charmap | removeformat',
+          menubar: false,
+          statusbar: false,
+          content_style: "body { line-height: 1; }"
+    });
+    </script>
+
+<div class="content">
+    {% if message %}
+    <center><h2><button type="button" disabled="disabled" class="savedChanges">{{message}}</button></h2></center>
+    <p></p>
+    {% endif %}
+    <div id="content-grid">
+        <div class="left-grid"><img class="photo-small" src="{{ trip.img.url }}">
+            <p></p>
+            {% if photos %}
+        <h5><button id="editPhotos" class="planButton" type="button">Edit Trip Photos</button></h5>
+        {% endif %}
+    </div>
+
+        <div>
+<form action="{% url 'edit_trip' trip.id %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    Trip Title: <input type="text" class="planInput" name="title" value="{{trip.title}}">
+    <hr>
+    Trip Status:
+    {% if trip.status == 'been' %}
+    <p>
+        <input class="radioBtn" type="radio" id="been" name="status" checked="checked" value="been">
+                <label class="radioBtnLabel" for="been">I've been on this trip.</label>
+        <input class="radioBtn" type="radio" id="future" name="status" value="future">
+            <label class="radioBtnLabel" for="future">This is a future trip.</label>
+    </p>
+    {% else %}
+    <p>
+        <input class="radioBtn" type="radio" id="been" name="status" value="been">
+                <label class="radioBtnLabel" for="been">I've been on this trip.</label>
+        <input class="radioBtn" type="radio" checked="checked" id="future" name="status" value="future">
+            <label class="radioBtnLabel" for="future">This is a future trip.</label>
+    </p>
+    {% endif %}
+    <hr>
+    Trip Tags: 
+    <datalist id="tags">
+        {% for tag in tags %}
+    <option name="tag" value="{{tag.tags}}">
+        {% endfor %}
+    </datalist>
+    <p></p>
+    <span id="tagDiv">
+    {% for tag in tags %}
+    <input list="tags" type="text" value="{{tag}}" class="tagsInput" name="tags[]">
+    {% endfor %}   
+    </span>
+    <p><button type="button" class="tagButton" id="addTag">+ New Tag</button></p>
+    <p></p>
+    <hr>
+    <p></p>
+    <p><button type="submit" class="planButton">Save Trip Details</button></p>
+
+</div>
+</div>
+<div id="tripPlans">
+    <hr>
+    <h2>Edit Trip Plans</h2>
+    <textarea id="planTextarea" name="plans">{{trip.plans|safe}}</textarea>
+    <p></p>
+    <button type="submit" class="planButton">Save Plans</button>
+
+    <hr>
+    </div>
+
+    <div id="editPhotosDisplay">
+        <div id="content-grid">
+            <div>+ Add More Photos: <input name="newPhotos[]" type="file" accept="image/*" multiple></div>
+            <div class="sortby"><button type="submit" class="planButton inline">Save Photos</button></div>
+        </div>
+        
+        <div id="photos-grid">
+            {% for photo in photos %}
+            <div>
+                <input type="hidden" name="photos[]" value="{{photo.id}}">
+                <img class="thumbnail" src="{{ photo.photos.url }}">
+                <input class="captionsInput" type="text" name="captions[]" value="{{photo.caption}}">
+                <input class="radioBtn" type="checkbox" id="{{photo.id}}" name="removePhotos[]" value="{{photo.id}}">
+                    <label class="radioBtnLabel" for="{{photo.id}}">Remove Photo</label>
+                <p></p>
+            </div>
+            {% endfor %}
+        </div>
+        <button class="planButton">Save Photos</button>
+    
+    </div>
+</form>
+
+</div>
+<script src="{% static 'travel/edit.js' %}"></script>
+{% endblock %}

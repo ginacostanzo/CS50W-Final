@@ -1,0 +1,22 @@
+{% extends "travel/layout.html" %}
+{% load static %}
+{% block body %}
+
+<div class="content">
+    <form method="post" action="/captions">
+        {% csrf_token %}
+    <div id="photos-grid">
+        {% for photo in photos %}
+        <div>
+            <input type="hidden" name="photos[]" value="{{photo.id}}">
+            <img class="thumbnail" src="{{ photo.photos.url }}">
+            <input class="planInput" type="text" name="captions[]" placeholder="Caption your photo">
+            <p></p>
+        </div>
+        {% endfor %}
+    </div>
+    <button type="submit" class="planButton">Save Captions</button>
+    </form>
+</div>
+<script src="{% static 'travel/trip.js' %}"></script>
+{% endblock %}

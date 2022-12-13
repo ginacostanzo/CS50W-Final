@@ -1,0 +1,119 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}Travel{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link href="{% static 'travel/styles.css' %}" rel="stylesheet">
+        <script src="https://cdn.tiny.cloud/1/92o4gldpumtizl3f1b6hbltml0p3enp05uxoixv8tsez8wmh/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+        <script src="{% static 'travel/tinymce/tinymce.min.js' %}"></script>
+        <link rel="icon" href="{% static 'travel/favicon.png' %}">
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg top-nav" id="grid">
+            <div>           
+                <ul class="navbar-nav mr-auto">
+                    <li>
+                        <a href="{% url 'index' %}"><img src="{% static 'travel/Traveler.png' %}"></a>
+                    </li>
+                </ul>
+            </div>
+            <div id="desktop">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'browse' %}">View All Trips</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'random_trip' %}">Random Trip</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li id="dropdownMenuDiv" class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            My Lists
+                        </a>
+                        <div id="dropdownMenu" class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                          <a class="dropdown-item" href="{% url 'lists_view' list_name='mine' %}">My Planned Trips</a>
+                          <a class="dropdown-item" href="{% url 'lists_view' list_name='Wishlist' %}">Wishlist</a>
+                          <a class="dropdown-item" href="{% url 'lists_view' list_name='Past Trips' %}">Past Trips</a>
+                          <a class="dropdown-item" href="{% url 'lists_view' list_name='more' %}">+ More Lists</a>
+                        </div>
+                      </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'plan' %}">Plan a Trip</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'profile' user.id %}">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div id="mobile">
+                <center><button id="mobile-menu">Menu</button></center>
+            </div>
+      </nav>        
+      <ul class="mobile-menu navbar-nav" id="menu">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'browse' %}">View All Trips</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'random_trip' %}">Random Trip</a>
+        </li>
+        {% if user.is_authenticated %}
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMobile" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                My Lists
+            </a>
+            <div id="dropdownMenuMobile" class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="{% url 'lists_view' list_name='mine' %}">My Planned Trips</a>
+              <a class="dropdown-item" href="{% url 'lists_view' list_name='Wishlist' %}">Wishlist</a>
+              <a class="dropdown-item" href="{% url 'lists_view' list_name='Past Trips' %}">Past Trips</a>
+              <a class="dropdown-item" href="{% url 'lists_view' list_name='more' %}">+ More Lists</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'plan' %}">Plan a Trip</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'profile' user.id %}">Profile</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}">Log In</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'register' %}">Register</a>
+        </li>
+        {% endif %}
+    </ul>
+                
+        
+        <div class="body">
+            {% block body %}
+            {% endblock %}
+        </div>
+        <script src="{% static 'travel/travel.js' %}"></script>
+    
+        <div id="jumpToTop">
+            <button class="planButton" type="button">Jump to Top</button>
+        </div>
+    </body>
+
+
+</html>
