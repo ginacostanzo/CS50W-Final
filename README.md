@@ -1,6 +1,6 @@
 # Traveler Web App - CS50 Final Project 2022
 
-#### Video Demo:
+#### Video Demo: https://youtu.be/4BfwX2Xj0z0
 
 #### Description: 
 The purpose of this Django web app is to allow users to upload & browse different trip plans. When planning a trip recently, it was frustrating to have to search many different places for itineraries and ideas and I wanted to create something where you could find everything in one place to help you plan your next adventure.
